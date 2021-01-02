@@ -9,10 +9,12 @@ class Tag extends Model
 {
     use Sluggable;
 
+    protected $fillable = ['title'];
+
     public function posts(){
         return $this->belongsToMany(
             Post::class,
-            'posts_tags',
+            'post_tags',
             'tags_id',
             'post_id'
         );
