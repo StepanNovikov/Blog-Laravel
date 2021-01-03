@@ -50,7 +50,7 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
-    public function add($fields)
+    public static function add($fields)
     {
         $user = new static;
         $user->fill($fields);
@@ -69,28 +69,29 @@ class User extends Authenticatable
 
     public function remove()
     {
-        Storage::delete('uploads/' . $this->image);
+        Storage::delete('uploads/' . $this->avatar);
         $this->delete();
     }
 
     public function uploadAvatar($image)
     {//загрузка картинки
         if($image ==null){return;}
-
-        Storage::delete('uploads/' . $this->image);
+        if($this->avatar != null){
+            Storage::delete('uploads/' . $this->avatar);
+        }
         $filename = str_random(10). '.' .$image->extension();
-        $image->saveAs('uploads', $filename);
-        $this->image = $filename;
+        $image->storeAs('uploads', $filename);
+        $this->avatar = $filename;
         $this->save();
     }
 
     public function getAvatar() 
     {
-        if($this->image == null)
+        if($this->avatar == null)
         {
-            return '/img/no-user-mage.png';
+            return '/Blog-Laravel/public/img/default-50x50.gif';
         }
-        return '/uploads/' . $this->image;
+        return '/Blog-Laravel/public/uploads/' . $this->avatar;
     }
 
     public function makeAdmin()
